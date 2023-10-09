@@ -1,6 +1,8 @@
 # ProgrammingLanguagesGroupAssignments
 HTTPly
-Thomas Jordan, Mason Moore
+Thomas Jordan, Mason Moore, Thomas Kim
+
+Try it out: https://thomasnjordan.github.io/HTTPly/   
 
 HTTPly is an ambitious project aimed at revolutionizing the way users interact with HTTP POST and GET requests by providing them with a user-friendly drag-and-drop interface. This innovative platform addresses a significant challenge encountered by both novice and seasoned API and web designers—mastering the intricacies of GET and POST requests. A comprehensive understanding of these requests is paramount, as they form the backbone of various web functionalities, including authentication, managing complex fetch queries, orchestrating the loading of data and JavaScript in precise sequences, ensuring input data is thoroughly sanitized (even the kind that remains invisible to ordinary users), and so much more.
 
