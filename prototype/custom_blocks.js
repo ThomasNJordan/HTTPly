@@ -1,8 +1,3 @@
-//const makeHttpRequest = require('./http_request');
-//const url = 'localhost:5500/';
-// makeHttpRequest(url); -> supply this into blockly button 
-
-// Define a custom Blockly block for generating JSON for an HTTP request.
 Blockly.Blocks['generateHttpRequestJson'] = {
     init: function () {
         this.appendDummyInput()
@@ -63,7 +58,7 @@ Blockly.JavaScript['generateHttpRequestJson'] = function (block) {
         code += '  "data": ' + value_data + ',\n';
     }
     code += '  "method": "' + method + '"\n';
-    code += '}\n';
+    code += '}';
 
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
