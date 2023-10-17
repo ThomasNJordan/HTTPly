@@ -35,18 +35,21 @@ Blockly.Blocks['generateHttpRequestJson'] = {
     }
 };
 
-// Define the JavaScript code generation for the custom block.
+// Define the JavaScript code generation for the custom block using .forBlock[blockType].
 Blockly.JavaScript['generateHttpRequestJson'] = function (block) {
+    var method = block.getFieldValue('Method');
     var value_url = Blockly.JavaScript.valueToCode(block, 'URL', Blockly.JavaScript.ORDER_ATOMIC);
     var value_headers = Blockly.JavaScript.valueToCode(block, 'Headers', Blockly.JavaScript.ORDER_ATOMIC);
     var value_parameters = Blockly.JavaScript.valueToCode(block, 'Parameters', Blockly.JavaScript.ORDER_ATOMIC);
     var value_data = Blockly.JavaScript.valueToCode(block, 'Data', Blockly.JavaScript.ORDER_ATOMIC);
-    var method = block.getFieldValue('Method'); // Get the selected HTTP method
+
+    // Define the block type and generate code accordingly.
+    var blockType = 'generateHttpRequestJson';
 
     // Generate the JSON object for the HTTP request.
     var code = '{\n';
     if (value_url) {
-        code += '  "url": "' + value_url + '",\n';
+        code += '  "url": ' + value_url + ',\n';
     }
     if (value_headers) {
         code += '  "headers": ' + value_headers + ',\n';
@@ -60,7 +63,11 @@ Blockly.JavaScript['generateHttpRequestJson'] = function (block) {
     code += '  "method": "' + method + '"\n';
     code += '}';
 
-    return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    // Use the .forBlock[blockType] dictionary for code generation.
+    var generator = Blockly.getMainWorkspace().getGenerator();
+    var codeForBlock = generator['.forBlock'][blockType];
+    console.log(code)
+    return codeForBlock(block);
 };
 
 Blockly.Blocks['http_request_url'] = {

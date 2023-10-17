@@ -39,6 +39,15 @@
             document.getElementById('codeDiv').innerText = code;
         }
 
+        function generateCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            code = code.replace(/;$/, '');  // Remove a semicolon at the end (if present)
+            console.log(code);
+            document.getElementById('codeDiv').innerText = code;
+            console.log(code);
+            console.log("Reached\n");
+        }
+
         async function runCode() {
             var code = Blockly.JavaScript.workspaceToCode(workspace);
             console.log('Generated Code:', code);
