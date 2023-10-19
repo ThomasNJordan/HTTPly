@@ -7,21 +7,9 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <div>
-        <p>
-            <a href="https://github.com/ThomasNJordan/HTTPly" target="_blank">
-            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" width="20" height="20">
-            View Source on GitHub
-            </a>
-        </p>
-    </div>
     <div class="row">
         <div id="blocklyDiv" class="full-width"></div>
         <xml id="toolbox" style="display: none">
-            <block type="printTest"></block>
-            <block type="deleteTest"></block>
-            <block type="dummy_test"></block>
-
             <block type="generateHttpRequestJson"></block>
             <block type="http_request_url"></block>
             <block type="http_request_headers"></block>
@@ -51,20 +39,42 @@
             document.getElementById('codeDiv').innerText = code;
         }
 
-        function runCode() {
+        function generateCode() {
             var code = Blockly.JavaScript.workspaceToCode(workspace);
+            code = code.replace(/;$/, '');  // Remove a semicolon at the end (if present)
+            console.log(code);
+            document.getElementById('codeDiv').innerText = code;
+            console.log(code);
+            console.log("Reached\n");
+        }
+
+        async function runCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            console.log('Generated Code:', code);
             try {
-                var output = eval(code);
-                document.getElementById('outputDiv').innerText = output;
+                var request = JSON.parse(code);
+                var response = await fetch(request.url, {
+                    method: request.method,
+                    headers: new Headers(request.headers),
+                    body: JSON.stringify(request.data),
+                });
+
+                if (response.status === 200) {
+                    var responseData = await response.json();
+                    document.getElementById('outputDiv').innerText = JSON.stringify(responseData, null, 2);
+                } else {
+                    document.getElementById('outputDiv').innerText = 'HTTP Error: ' + response.status;
+                }
             } catch (e) {
                 document.getElementById('outputDiv').innerText = 'Error: ' + e;
             }
         }
 
+
         function saveBlocks() {
             var xml = Blockly.Xml.workspaceToDom(workspace);
             var xmlText = Blockly.Xml.domToPrettyText(xml);
-            var blob = new Blob([xmlText], {type: 'text/xml'});
+            var blob = new Blob([xmlText], { type: 'text/xml' });
             var a = document.createElement('a');
             a.download = 'blocks.xml';
             a.href = URL.createObjectURL(blob);
@@ -84,7 +94,6 @@
             };
             reader.readAsText(file);
         }
-
     </script>
 </body>
 </html>
