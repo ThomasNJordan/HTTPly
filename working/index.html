@@ -42,34 +42,30 @@
         function generateCode() {
             var code = Blockly.JavaScript.workspaceToCode(workspace);
             code = code.replace(/;$/, '');  // Remove a semicolon at the end (if present)
-            console.log(code);
             document.getElementById('codeDiv').innerText = code;
-            console.log(code);
-            console.log("Reached\n");
         }
 
-        async function runCode() {
+        async function runCode() { // send JSON to server to send as request
             var code = Blockly.JavaScript.workspaceToCode(workspace);
-            console.log('Generated Code:', code);
             try {
+                // Parse the generated code to get the JSON data
                 var request = JSON.parse(code);
-                var response = await fetch(request.url, {
-                    method: request.method,
-                    headers: new Headers(request.headers),
-                    body: JSON.stringify(request.data),
+
+                // Send the JSON data to your server
+                const response = await fetch('/your-server-endpoint', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request),
                 });
 
-                if (response.status === 200) {
-                    var responseData = await response.json();
-                    document.getElementById('outputDiv').innerText = JSON.stringify(responseData, null, 2);
-                } else {
-                    document.getElementById('outputDiv').innerText = 'HTTP Error: ' + response.status;
-                }
+                const responseData = await response.json();
+                document.getElementById('outputDiv').innerText = JSON.stringify(responseData, null, 2);
             } catch (e) {
                 document.getElementById('outputDiv').innerText = 'Error: ' + e;
             }
         }
-
 
         function saveBlocks() {
             var xml = Blockly.Xml.workspaceToDom(workspace);
