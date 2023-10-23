@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTTPly</title>
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script src="custom_blocks.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div id="view_source">
+        <a href="https://github.com/ThomasNJordan/HTTPly" target="_blank">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" width="20" height="20">
+        View Source
+        </a>
+    </div>
+    <div class="row">
+        <div id="blocklyDiv" class="full-width"></div>
+        <xml id="toolbox" style="display: none">
+            <block type="generateHttpRequestJson"></block>
+            <block type="http_request_url"></block>
+            <block type="http_request_headers"></block>
+            <block type="http_request_parameters"></block>
+            <block type="http_request_data"></block>
+        </xml>
+    </div>
+    <div class="row button-row">
+        <button onclick="generateCode()">Generate JSON</button>
+        <button onclick="runCode()">Run JavaScript</button>
+        <button onclick="saveBlocks()">Save Blocks</button>
+        <button onclick="loadBlocks()">Load Blocks</button>
+        <input type="file" id="loadInput" style="display: none;" onchange="loadBlocksFile(event)">
+    </div>
+    <div class="row">
+        <div id="codeDiv" class="half-width"></div>
+        <div id="outputDiv" class="half-width"></div>
+    </div>
+    <script>
+        const apiEndpoint = 'https://508f-34-168-22-50.ngrok.io'
+
+        var workspace = Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            scrollbars: true
+        });
+
+        function generateCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            document.getElementById('codeDiv').innerText = code;
+        }
+
+        function generateCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            code = code.replace(/;$/, '');  // Remove a semicolon at the end (if present)
+            document.getElementById('codeDiv').innerText = code;
+        }
+
+        async function runCode() { // send JSON to server to send as request
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            try {
+                // Parse the generated code to get the JSON data
+                var request = JSON.parse(code);
+
+                // Send the JSON data to your server
+                fetch(apiEndpoint, request)
+                    .then(request => {
+                      console.log('Response:', request);
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                    });
+
+                const responseData = await response.json();
+                document.getElementById('outputDiv').innerText = JSON.stringify(responseData, null, 2);
+            } catch (e) {
+                document.getElementById('outputDiv').innerText = 'Error: ' + e;
+            }
+        }
+
+        function saveBlocks() {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            var xmlText = Blockly.Xml.domToPrettyText(xml);
+            var blob = new Blob([xmlText], { type: 'text/xml' });
+            var a = document.createElement('a');
+            a.download = 'blocks.xml';
+            a.href = URL.createObjectURL(blob);
+            a.click();
+        }
+
+        function loadBlocks() {
+            document.getElementById('loadInput').click();
+        }
+
+        function loadBlocksFile(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var xml = Blockly.utils.xml.textToDom(e.target.result);
+                Blockly.Xml.appendDomToWorkspace(xml, workspace);
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
