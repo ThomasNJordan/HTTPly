@@ -16,7 +16,6 @@ app.use(cors({
 // Define the default path
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
-  console.log("Connected")
 });
 
 // Specify the JSON data endpoint
@@ -82,6 +81,9 @@ axios(httpRequest)
 
     // Send the response data back to the client
     res.status(200).json({ Response: responseData });
+
+    // save response to console for later viewing
+    // console.log(responseData);
   })
   .catch((error) => {
     // Handle any errors that occur during the HTTP request
