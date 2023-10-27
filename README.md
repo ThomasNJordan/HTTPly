@@ -44,7 +44,7 @@ Begin by placing a "Generate HTTP Request" block. Drag a URL block into the URL 
 ### Results
 - Results with be viewable in the panel on the right. 
 <kbd>
-![Image of our Blockly program](https://github.com/ThomasNJordan/HTTPly/blob/main/docs/img/blockly.png)
+    <img src="https://github.com/ThomasNJordan/HTTPly/blob/main/docs/img/blockly.png">
 </kbd>
 
 # Contributing to This Project
