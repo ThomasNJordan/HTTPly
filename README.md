@@ -43,6 +43,7 @@ Begin by placing a "Generate HTTP Request" block. Drag a URL block into the URL 
 - When you're ready to send the request, click `Run Javascript` to send it.
 ### Results
 - Results with be viewable in the panel on the right. 
+![Image of our Blockly program](https://github.com/ThomasNJordan/HTTPly/blob/main/docs/img/blockly.png)
 
 # Contributing to This Project
 The code to create new blocks can be found in the `/src/custom_blocks.js` file. To change how the server processes or manages requests, that code is in the `src/node_server/server.js` file.
