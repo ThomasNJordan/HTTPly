@@ -35,7 +35,6 @@
         <div id="outputDiv" class="half-width"></div>
     </div>
     <script>
-        const apiEndpoint = 'https://508f-34-168-22-50.ngrok.io'
 
         var workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
@@ -53,27 +52,36 @@
             document.getElementById('codeDiv').innerText = code;
         }
 
-        async function runCode() { // send JSON to server to send as request
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
-            try {
-                // Parse the generated code to get the JSON data
-                var request = JSON.parse(code);
+        async function runCode() {
+        // send JSON to the server as a POST request to port 3000
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        try {
+            // Parse the generated code to get the JSON data
+            var requestData = JSON.parse(code);
 
-                // Send the JSON data to your server
-                fetch(apiEndpoint, request)
-                    .then(request => {
-                      console.log('Response:', request);
-                    })
-                    .catch(error => {
-                      console.error('Error:', error);
-                    });
+            // Define the API endpoint with port 3000
+            var apiEndpoint = 'http://localhost:3000/data'
 
+            // Send a POST request with JSON data
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: { // https://fetch.spec.whatwg.org/#http-access-control-allow-origin
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            if (response.ok) {
                 const responseData = await response.json();
                 document.getElementById('outputDiv').innerText = JSON.stringify(responseData, null, 2);
-            } catch (e) {
-                document.getElementById('outputDiv').innerText = 'Error: ' + e;
+            } else {
+                document.getElementById('outputDiv').innerText = 'Error: Request failed with status ' + response.status;
             }
+        } catch (e) {
+            document.getElementById('outputDiv').innerText = 'Error: ' + e;
         }
+    }
+
 
         function saveBlocks() {
             var xml = Blockly.Xml.workspaceToDom(workspace);
