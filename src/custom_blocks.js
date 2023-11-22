@@ -84,7 +84,7 @@ Blockly.Blocks['http_request_headers'] = {
     init: function() {
         this.appendDummyInput()
             .appendField("Headers (JSON)")
-            .appendField(new Blockly.FieldTextInput('{"Content-Type": "application/json", "Another-Header": "value"}'), "Headers");
+            .appendField(new Blockly.FieldTextInput('{"Content-Type": "application/json"}'), "Headers");
         this.setOutput(true, "Object");
         this.setColour(230);
         this.setTooltip("Input for the headers (JSON) of the HTTP request.");
