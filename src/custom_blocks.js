@@ -81,27 +81,29 @@ Blockly.JavaScript['http_request_url'] = function (block) {
 };
 
 Blockly.Blocks['http_request_headers'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("Headers (JSON)")
-            .appendField(new Blockly.FieldTextInput('{"Content-Type": "application/json"}'), "Headers");
+            .appendField(new Blockly.FieldTextInput('{"Content-Type": "application/json", "Another-Header": "value"}'), "Headers");
         this.setOutput(true, "Object");
-        this.setColour("rgb(234, 67, 53)"); 
+        this.setColour(230);
         this.setTooltip("Input for the headers (JSON) of the HTTP request.");
         this.setHelpUrl("");
     }
 };
 
-Blockly.JavaScript['http_request_headers'] = function (block) {
+Blockly.JavaScript['http_request_headers'] = function(block) {
     var headers = block.getFieldValue('Headers');
     try {
         var parsedHeaders = JSON.parse(headers);
-        return [JSON.stringify(parsedHeaders), Blockly.JavaScript.ORDER_ATOMIC];
+        var headersCode = JSON.stringify(parsedHeaders);
     } catch (e) {
         console.error("Invalid JSON format for headers: " + headers);
-        return ["{}", Blockly.JavaScript.ORDER_ATOMIC];
+        var headersCode = "{}";
     }
+    return [headersCode, Blockly.JavaScript.ORDER_ATOMIC];
 };
+
 
 Blockly.Blocks['http_request_parameters'] = {
     init: function () {

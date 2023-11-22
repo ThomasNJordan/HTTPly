@@ -45,9 +45,17 @@ app.post('/data', (req, res) => {
         break;
   
       case 'headers':
-        // Handle the 'headers' key
-        const headers = jsonData.headers;
-        httpRequest.headers = headers;
+        if (typeof jsonData.headers === 'string') {
+          const headersArray = jsonData.headers.split(',').map(h => h.trim());
+          const headersObject = {};
+          headersArray.forEach(header => {
+            const [key, value] = header.split(':').map(h => h.trim());
+            headersObject[key] = value;
+          });
+          httpRequest.headers = headersObject;
+        } else {
+          httpRequest.headers = jsonData.headers;
+        }
         break;
   
       case 'parameters':
