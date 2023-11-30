@@ -13,15 +13,29 @@
         View Source
         </a>
     </div>
+
     <div class="row">
         <div id="blocklyDiv" class="full-width"></div>
         <xml id="toolbox" style="display: none">
-            <block type="generateHttpRequestJson"></block>
-            <block type="http_request_url"></block>
-            <block type="http_request_headers"></block>
-            <block type="http_request_data"></block>
+            <category name="HTTP Request Values">
+                <block type="generateHttpRequestJson"></block>
+                <block type="http_request_url"></block>
+                <block type="http_request_headers"></block>
+                <block type="http_request_data"></block>
+                <block type="http_response"></block>
+            </category>
+            <category name="Logic">
+                <block type="compare_values"></block>
+                <!--
+                <block type="custom_while"></block>
+                <block type="custom_for_loop"></block>
+                <block type="controls_if"></block>
+                <block type="math_arithmetic"></block> 
+                -->
+            </category> 
         </xml>
     </div>
+
     <div class="row button-row">
         <button onclick="generateCode()">Generate JSON</button>
         <button onclick="runCode()">Run JavaScript</button>
@@ -34,7 +48,6 @@
         <div id="outputDiv" class="half-width"></div>
     </div>
     <script>
-
         var workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
             scrollbars: true
@@ -52,14 +65,13 @@
         }
 
         async function runCode() {
-            // send JSON to the server as a POST request to port 3000
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
             try {
-                // Parse the generated code to get the JSON data
+                // send JSON to the server as a POST request to port 3000
+                var code = Blockly.JavaScript.workspaceToCode(workspace);
                 var requestData = JSON.parse(code);
             
                 // Define the API endpoint with port 3000
-                var apiEndpoint = 'http://localhost:3000/data'
+                var apiEndpoint = 'http://localhost:3000/data';
             
                 // Send a POST request with JSON data
                 const response = await fetch(apiEndpoint, {
@@ -72,14 +84,22 @@
             
                 if (response.ok) {
                     const contentType = response.headers.get('content-type');
+                    const responseData = await response.json();
+                
+                    // Search for existing 'http_response' blocks in the workspace
+                    var existingResponseBlocks = workspace.getAllBlocks().filter(block => block.type === 'http_response');
+                    if (existingResponseBlocks.length > 0) {
+                        // Store the response in the generate JSON block
+                        var storeResponseBlock = existingResponseBlocks[0];
+                        storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'RESPONSE_DATA');
+                    }
+                
                     if (contentType && contentType.includes('application/json')) {
-                        const responseData = await response.json();
                         // Stringify the JSON response with indentation for better readability
                         const formattedResponse = JSON.stringify(responseData, null, 2);
                         // Set the formatted JSON content to the output div
                         document.getElementById('outputDiv').innerText = formattedResponse;
                     } else if (contentType && contentType.includes('text/html') || responseData.trim().startsWith('<html>')) {
-                        const responseData = await response.text();
                         // Set the HTML content to the output div
                         document.getElementById('outputDiv').innerHTML = responseData;
                     } else {
@@ -92,7 +112,6 @@
                 document.getElementById('outputDiv').innerText = 'Error: ' + e;
             }
         }
-
 
         function saveBlocks() {
             var xml = Blockly.Xml.workspaceToDom(workspace);
