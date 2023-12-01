@@ -134,7 +134,7 @@ Blockly.Blocks['http_response'] = {
 };
 
 Blockly.JavaScript['http_response'] = function(block) {
-    var httpRequest = Blockly.JavaScript.statementToCode(block, 'HTTP_REQUEST');
+    var httpRequest = Blockly.JavaScript.statementToCode(block, 'RESPONSE_DATA');
     return httpRequest;
 };
 

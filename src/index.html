@@ -79,10 +79,9 @@
                 if (code.charAt(code.length - 2) == ';') { // -2 because whitespace at end of request
                     code = code.slice(0, -2); // Remove the last character (semicolon)
                 }
-                console.log(code);
 
-                var requestData = JSON.parse(code);
-                console.log(requestData);
+                // parse JSON data
+                var requestData = JSON.parse(code); 
             
                 // Define the API endpoint with port 3000
                 var apiEndpoint = 'http://localhost:3000/data';
@@ -105,17 +104,17 @@
                     if (existingResponseBlocks.length > 0) {
                         // Store the response in the generate JSON block
                         var storeResponseBlock = existingResponseBlocks[0];
-                        storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'RESPONSE_DATA');
+                        storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'HTTP_DATA');
                     }
-                
-                    if (contentType && contentType.includes('application/json')) {
+                    
+                    if (contentType && contentType.includes('<html>')) {
+                        // Set the HTML content to the output div
+                        document.getElementById('outputDiv').innerHTML = responseData;
+                    } else if (contentType && contentType.includes('application/json')) {
                         // Stringify the JSON response with indentation for better readability
                         const formattedResponse = JSON.stringify(responseData, null, 2);
                         // Set the formatted JSON content to the output div
                         document.getElementById('outputDiv').innerText = formattedResponse;
-                    } else if (contentType && contentType.includes('text/html') || responseData.trim().startsWith('<html>')) {
-                        // Set the HTML content to the output div
-                        document.getElementById('outputDiv').innerHTML = responseData;
                     } else {
                         document.getElementById('outputDiv').innerText = 'Unsupported response format';
                     }
