@@ -106,22 +106,32 @@
                         var storeResponseBlock = existingResponseBlocks[0];
                         storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'HTTP_DATA');
                     }
-                    
-                    if (contentType && contentType.includes('<html>')) {
+                    if (responseData) {
+                        // Function to remove newline characters from the JSON string
+                        function replacer(key, value) {
+                            // If the value is a string containing newline characters, remove them
+                            if (typeof value === 'string') {
+                                return value.replace(/\n/g, '');
+                            }
+                            return value;
+                        }
+
+                        // Assuming responseData is an object
+                        var jsonString = JSON.stringify(responseData, replacer);
+                        var outputText = jsonString.replace('{"Response":"', '').replace('"}', '');
+
                         // Set the HTML content to the output div
-                        document.getElementById('outputDiv').innerHTML = responseData;
+                        document.getElementById('outputDiv').innerHTML = outputText;
                     } else if (contentType && contentType.includes('application/json')) {
                         // Stringify the JSON response with indentation for better readability
                         const formattedResponse = JSON.stringify(responseData, null, 2);
                         // Set the formatted JSON content to the output div
                         document.getElementById('outputDiv').innerText = formattedResponse;
+                    } 
                     } else {
                         document.getElementById('outputDiv').innerText = 'Unsupported response format';
                     }
-                } else {
-                    document.getElementById('outputDiv').innerText = 'Error: Request failed with status ' + response.status;
-                }
-            } catch (e) {
+                } catch (e) {
                 document.getElementById('outputDiv').innerText = 'Error: ' + e;
             }
         }
