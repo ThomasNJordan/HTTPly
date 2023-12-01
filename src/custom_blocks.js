@@ -135,7 +135,7 @@ Blockly.Blocks['http_response'] = {
 
 Blockly.JavaScript['http_response'] = function(block) {
     var httpRequest = Blockly.JavaScript.statementToCode(block, 'HTTP_REQUEST');
-    return [httpRequest, Blockly.JavaScript.ORDER_ATOMIC];
+    return httpRequest;
 };
 
 

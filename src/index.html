@@ -40,7 +40,7 @@
 
     <div class="row button-row">
         <button onclick="generateCode()">Generate JSON</button>
-        <button onclick="runCode()">Run JavaScript</button>
+        <button onclick="runCode()">Run Commands</button>
         <button onclick="saveBlocks()">Save Blocks</button>
         <button onclick="loadBlocks()">Load Blocks</button>
         <input type="file" id="loadInput" style="display: none;" onchange="loadBlocksFile(event)">
@@ -62,15 +62,27 @@
 
         function generateCode() {
             var code = Blockly.JavaScript.workspaceToCode(workspace);
-            code = code.replace(/;$/, '');  // Remove a semicolon at the end (if present)
+            // remove semicolon at end if present
+            if (code.charAt(code.length - 2) == ';') { // -2 because whitespace at end of request
+                code = code.slice(0, -2); // Remove the last character (semicolon)
+            }
             document.getElementById('codeDiv').innerText = code;
         }
 
+        /* main function to send code to interpreter server */
         async function runCode() {
             try {
                 // send JSON to the server as a POST request to port 3000
                 var code = Blockly.JavaScript.workspaceToCode(workspace);
+
+                // remove semicolon after end of JavaScript object for JSON parsing
+                if (code.charAt(code.length - 2) == ';') { // -2 because whitespace at end of request
+                    code = code.slice(0, -2); // Remove the last character (semicolon)
+                }
+                console.log(code);
+
                 var requestData = JSON.parse(code);
+                console.log(requestData);
             
                 // Define the API endpoint with port 3000
                 var apiEndpoint = 'http://localhost:3000/data';
