@@ -28,6 +28,8 @@
             <category name="HTTP Response">
                 <block type="http_response"></block>
                 <block type="print_http_response"></block>
+                <block type="parse_response"></block>
+                <block type="http_request_data"></block>
             </category>
             <category name="Logic">
                 <block type="compare_values"></block>
@@ -108,7 +110,7 @@
                 
                     // Search for existing 'http_response' blocks in the workspace
                     var existingResponseBlocks = workspace.getAllBlocks().filter(block => block.type === 'http_response');
-                    if (existingResponseBlocks.length > 0) { // TODO: FIX ME
+                    if (existingResponseBlocks.length > 0) { // TODO: Implement additonal responses
                         var httpBlock = existingResponseBlocks[0]; // Assuming you're updating the first http_response block
 
                         // Update the connected block with the responseData

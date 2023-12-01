@@ -148,8 +148,7 @@ Blockly.Blocks['print_http_response'] = {
     init: function() {
         this.appendValueInput("HTTP_RESPONSE")
             .setCheck("HTTP_DATA")
-            .appendField("Get HTTP Response");
-        
+            .appendField("Print HTTP Response");
         this.setOutput(true, "HTTP_DATA");
         this.setColour("rgb(100, 100, 100)");
         this.setTooltip("Returns the HTTP Response value");
@@ -163,28 +162,49 @@ Blockly.JavaScript['print_http_response'] = function(block) {
     return [httpResponse, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*
-Blockly.Blocks['print'] = {
-    init: function () {
-        this.appendValueInput("PRINT")
-            .setCheck(null)
-            .appendField("print");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(260);
+
+Blockly.Blocks['parse_response'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Parse HTTP response");
+        this.appendValueInput("RESPONSE")
+            .setCheck("HTTP_DATA")
+            .appendField("Response");
+        this.appendValueInput("Data")
+            .setCheck("Object")
+            .appendField("For values");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("Filter for specific values from the HTTP response data.");
+        this.setHelpUrl("");
     }
 };
-*/
+
+Blockly.JavaScript['parse_response'] = function(block) {
+    var value_response = Blockly.JavaScript.valueToCode(block, 'RESPONSE', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_data = Blockly.JavaScript.valueToCode(block, 'Data', Blockly.JavaScript.ORDER_ATOMIC);
+
+    // Generate code to filter specific values from the HTTP response data
+    var code = `Object.keys(${value_response}).reduce(function(obj, key) {
+        if (${value_data}.hasOwnProperty(key)) {
+            obj[key] = ${value_response}[key];
+        }
+        return obj;
+    }, {})`;
+
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+
 
 /* ===== LOGICAL OPERATORS ===== */
 Blockly.Blocks['compare_values'] = {
     init: function() {
         this.appendValueInput("VALUE1")
-            .setCheck("Number")
+            .setCheck(["Number", "HTTP_DATA"]) // Allowing the input of either a number or HTTP_DATA type
             .appendField("Compare");
         this.appendValueInput("VALUE2")
-            .setCheck("Number");
-        this.appendDummyInput()
+            .setCheck(["Number", "HTTP_DATA"]) // Allowing the input of either a number or HTTP_DATA type
             .appendField(new Blockly.FieldDropdown([["==", "EQ"], ["!=", "NEQ"], ["<", "LT"], [">", "GT"], ["<=", "LTE"], [">=", "GTE"]]), "OP");
         this.setOutput(true, "Boolean");
         this.setColour(210);  // A color value
@@ -193,7 +213,6 @@ Blockly.Blocks['compare_values'] = {
     }
 };
 
-// Add logic for for loop, comparison statements
 Blockly.JavaScript['compare_values'] = function (block) {
     var value_value1 = Blockly.JavaScript.valueToCode(block, 'VALUE1', Blockly.JavaScript.ORDER_ATOMIC);
     var dropdown_op = block.getFieldValue('OP');
@@ -215,4 +234,3 @@ Blockly.JavaScript['compare_values'] = function (block) {
 
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
-
