@@ -120,6 +120,7 @@ Blockly.JavaScript['http_request_data'] = function (block) {
     }
 };
 
+/* ===== HTTP RESPONSE VALUES ===== */
 // store http resposne data
 Blockly.Blocks['http_response'] = {
     init: function() {
@@ -142,27 +143,38 @@ Blockly.JavaScript['http_response'] = function(block) {
     return [httpRequest, Blockly.JavaScript.ORDER_ATOMIC]; // Returning as output
 };
 
-
-/* ===== HTTP RESPONSE VALUES ===== */
+// print http response data
 Blockly.Blocks['print_http_response'] = {
     init: function() {
         this.appendValueInput("HTTP_RESPONSE")
             .setCheck("HTTP_DATA")
-            .appendField("Print HTTP Response");
+            .appendField("Get HTTP Response");
         
+        this.setOutput(true, "HTTP_DATA");
         this.setColour("rgb(100, 100, 100)");
-        this.setTooltip("Prints the HTTP Response value");
+        this.setTooltip("Returns the HTTP Response value");
         this.setHelpUrl("");
     }
 };
 
 Blockly.JavaScript['print_http_response'] = function(block) {
-    var httpRequest = Blockly.JavaScript.statementToCode(block, 'HTTP_DATA');
-    var labelField = block.getField('HTTP_DATA');
-    labelField.setVisible(false); // Hiding the FieldLabel after execution
-    return [httpRequest, Blockly.JavaScript.ORDER_ATOMIC]; // Returning as output
+    var httpResponse = Blockly.JavaScript.valueToCode(block, 'HTTP_RESPONSE', Blockly.JavaScript.ORDER_ATOMIC);
+    document.getElementById('outputDiv').innerText = httpResponse;
+    return [httpResponse, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+/*
+Blockly.Blocks['print'] = {
+    init: function () {
+        this.appendValueInput("PRINT")
+            .setCheck(null)
+            .appendField("print");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(260);
+    }
+};
+*/
 
 /* ===== LOGICAL OPERATORS ===== */
 Blockly.Blocks['compare_values'] = {

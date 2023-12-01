@@ -119,9 +119,8 @@
                         storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'HTTP_DATA');
                     }
 
-
-
-                    if (responseData) {
+                    var printBlocks = workspace.getAllBlocks().filter(block => block.type === 'print_http_response');
+                    if (responseData && printBlocks.length == 0) {
                         // Function to remove newline characters from the JSON string
                         function replacer(key, value) {
                             // If the value is a string containing newline characters, remove them
