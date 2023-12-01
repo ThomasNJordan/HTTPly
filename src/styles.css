@@ -28,3 +28,55 @@ body, html {
     height: 50px; /* or whatever height you want */
     justify-content: flex-start;
 }
+
+
+/* For Github Link */
+#view_source {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+}
+
+#view_source a {
+    text-decoration: none;
+    color: #0366d6;
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center align */
+    padding: 5px 15px;
+    border: 1px solid #0366d6;
+    border-radius: 5px;
+    
+}
+
+#view_source a img {
+    margin-right: 10px; /* Adjusted spacing between logo and text */
+    width: 24px;
+    height: 24px;
+}
+
+#view_source a span {
+    font-size: 16px;
+    line-height: 24px; /* Match with logo height for vertical alignment */
+}
+
+#view_source a:hover {
+    background-color: #0366d6;
+    color: white;
+}
+
+#view_source a:hover img.github-logo{
+    background-color: #0366d6;
+    color: white;
+    content: url("logos/github-mark-white.svg"); 
+}
+
+.container {
+    padding-left: 15px;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+#view_source {
+    display: inline-block;
+}
+
