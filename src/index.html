@@ -19,12 +19,15 @@
     <div class="row">
         <div id="blocklyDiv" class="full-width"></div>
         <xml id="toolbox" style="display: none">
-            <category name="HTTP Request Values">
+            <category name="HTTP Request">
                 <block type="generateHttpRequestJson"></block>
                 <block type="http_request_url"></block>
                 <block type="http_request_headers"></block>
                 <block type="http_request_data"></block>
+            </category>
+            <category name="HTTP Response">
                 <block type="http_response"></block>
+                <block type="print_http_response"></block>
             </category>
             <category name="Logic">
                 <block type="compare_values"></block>
@@ -72,6 +75,10 @@
         /* main function to send code to interpreter server */
         async function runCode() {
             try {
+                // Execute all blocks except print block
+                var allBlocks = workspace.getAllBlocks();
+                var printBlock = null;
+
                 // send JSON to the server as a POST request to port 3000
                 var code = Blockly.JavaScript.workspaceToCode(workspace);
 
@@ -101,11 +108,19 @@
                 
                     // Search for existing 'http_response' blocks in the workspace
                     var existingResponseBlocks = workspace.getAllBlocks().filter(block => block.type === 'http_response');
-                    if (existingResponseBlocks.length > 0) {
+                    if (existingResponseBlocks.length > 0) { // TODO: FIX ME
+                        var httpBlock = existingResponseBlocks[0]; // Assuming you're updating the first http_response block
+
+                        // Update the connected block with the responseData
+                        httpBlock.setFieldValue(JSON.stringify(responseData), 'HTTP_DATA'); 
+                        
                         // Store the response in the generate JSON block
                         var storeResponseBlock = existingResponseBlocks[0];
                         storeResponseBlock.setFieldValue(JSON.stringify(responseData), 'HTTP_DATA');
                     }
+
+
+
                     if (responseData) {
                         // Function to remove newline characters from the JSON string
                         function replacer(key, value) {

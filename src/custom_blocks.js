@@ -123,10 +123,12 @@ Blockly.JavaScript['http_request_data'] = function (block) {
 // store http resposne data
 Blockly.Blocks['http_response'] = {
     init: function() {
-        this.appendStatementInput("HTTP_REQUEST")
+        this.appendStatementInput("HTTP_DATA")
             .setCheck(null)
-            .appendField("HTTP Response of");
-        this.setOutput(true, "String");
+            .appendField("HTTP Response of")
+            .appendField(new Blockly.FieldLabel('', 'invisible'), 'HTTP_DATA'); // Adding a FieldLabel named 'HTTP_DATA'
+
+        this.setOutput(true, "HTTP_DATA");
         this.setTooltip("Represents an HTTP response");
         this.setColour("rgb(234, 67, 53)"); 
         this.setHelpUrl("");
@@ -134,11 +136,35 @@ Blockly.Blocks['http_response'] = {
 };
 
 Blockly.JavaScript['http_response'] = function(block) {
-    var httpRequest = Blockly.JavaScript.statementToCode(block, 'RESPONSE_DATA');
-    return httpRequest;
+    var httpRequest = Blockly.JavaScript.statementToCode(block, 'HTTP_DATA');
+    var labelField = block.getField('HTTP_DATA');
+    labelField.setVisible(false); // Hiding the FieldLabel after execution
+    return [httpRequest, Blockly.JavaScript.ORDER_ATOMIC]; // Returning as output
 };
 
 
+/* ===== HTTP RESPONSE VALUES ===== */
+Blockly.Blocks['print_http_response'] = {
+    init: function() {
+        this.appendValueInput("HTTP_RESPONSE")
+            .setCheck("HTTP_DATA")
+            .appendField("Print HTTP Response");
+        
+        this.setColour("rgb(100, 100, 100)");
+        this.setTooltip("Prints the HTTP Response value");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.JavaScript['print_http_response'] = function(block) {
+    var httpRequest = Blockly.JavaScript.statementToCode(block, 'HTTP_DATA');
+    var labelField = block.getField('HTTP_DATA');
+    labelField.setVisible(false); // Hiding the FieldLabel after execution
+    return [httpRequest, Blockly.JavaScript.ORDER_ATOMIC]; // Returning as output
+};
+
+
+/* ===== LOGICAL OPERATORS ===== */
 Blockly.Blocks['compare_values'] = {
     init: function() {
         this.appendValueInput("VALUE1")
